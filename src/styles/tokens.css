@@ -1,0 +1,151 @@
+/**
+ * LinkingWordz design tokens — aligned to approved architecture (Section I).
+ */
+
+:root {
+  /* Colors */
+  --lw-teal: #104547;
+  --lw-teal-dark: #0c3739;
+  --lw-mauve: #af929d;
+  --lw-cream: #f5f3f0;
+  --lw-black: #000000;
+  --lw-gray: #bbb7b7;
+  --lw-white: #ffffff;
+
+  /* Semantic aliases */
+  --lw-color-bg: var(--lw-cream);
+  --lw-color-fg: var(--lw-black);
+  --lw-color-muted: color-mix(in srgb, var(--lw-black) 58%, var(--lw-cream));
+  --lw-color-border: var(--lw-gray);
+  --lw-color-focus: var(--lw-teal);
+  --lw-color-accent: var(--lw-mauve);
+  --lw-color-surface: var(--lw-white);
+  --lw-color-inverse: var(--lw-teal);
+
+  /**
+   * Typography families — consume via these variables only.
+   * Garet licensing pending: Fraunces is the approved temporary display face
+   * (wired in src/styles/fonts.ts). Swap to next/font/local when licensed.
+   */
+  --font-display: var(--font-display-face, "Garet"), "Fraunces", Georgia, serif;
+  --font-body: var(--font-body-face, "Barlow"), system-ui, sans-serif;
+
+  /* Backward-compatible aliases used by layout utilities */
+  --lw-font-primary: var(--font-display);
+  --lw-font-secondary: var(--font-body);
+
+  /* Type scale — desktop */
+  --text-h1: 56px;
+  --text-h2: 36px;
+  --text-h3: 24px;
+  --text-body: 17px;
+  --text-small: 13px;
+
+  --lw-text-xs: var(--text-small);
+  --lw-text-sm: 0.875rem;
+  --lw-text-base: var(--text-body);
+  --lw-text-md: 1.125rem;
+  --lw-text-lg: var(--text-h3);
+  --lw-text-xl: var(--text-h3);
+  --lw-text-2xl: var(--text-h2);
+  --lw-text-3xl: var(--text-h2);
+  --lw-text-4xl: var(--text-h1);
+
+  --lw-leading-tight: 1.2;
+  --lw-leading-snug: 1.35;
+  --lw-leading-normal: 1.6;
+  --lw-leading-relaxed: 1.75;
+
+  --lw-tracking-tight: -0.02em;
+  --lw-tracking-normal: 0;
+  --lw-tracking-wide: 0.04em;
+
+  --lw-weight-regular: 400;
+  --lw-weight-medium: 500;
+  --lw-weight-semibold: 600;
+  --lw-weight-bold: 700;
+
+  /* Spacing */
+  --space-xs: 8px;
+  --space-sm: 16px;
+  --space-md: 24px;
+  --space-lg: 40px;
+  --space-xl: 64px;
+  --space-2xl: 96px;
+
+  --lw-space-1: 0.25rem;
+  --lw-space-2: var(--space-xs);
+  --lw-space-3: 12px;
+  --lw-space-4: var(--space-sm);
+  --lw-space-5: var(--space-md);
+  --lw-space-6: var(--space-lg);
+  --lw-space-7: 48px;
+  --lw-space-8: var(--space-xl);
+  --lw-space-9: var(--space-2xl);
+  --lw-space-10: 128px;
+
+  /* Layout */
+  --container-max: 1200px;
+  --container-narrow: 780px;
+  --pad-desktop: 80px;
+  --pad-tablet: 40px;
+  --pad-mobile: 20px;
+
+  --lw-container: var(--container-max);
+  --lw-container-wide: 1400px;
+  --lw-text-width: var(--container-narrow);
+  --lw-gutter: var(--pad-mobile);
+  --lw-section-y: var(--space-xl);
+
+  /* Breakpoints: mobile <640 · tablet 640–1024 · desktop >1024 */
+  --lw-bp-mobile: 0;
+  --lw-bp-tablet: 640px;
+  --lw-bp-desktop: 1024px;
+
+  /* Borders */
+  --radius-sm: 4px;
+  --border-hairline: 1px solid var(--lw-gray);
+  --lw-radius-none: 0;
+  --lw-radius-sm: var(--radius-sm);
+  --lw-radius-md: var(--radius-sm);
+  --lw-border-width: 1px;
+  --lw-border-color: var(--lw-gray);
+
+  /* Transitions */
+  --ease-default: 200ms ease;
+  --lw-ease: ease;
+  --lw-duration-fast: 150ms;
+  --lw-duration: 200ms;
+  --lw-duration-slow: 400ms;
+
+  /* Focus */
+  --lw-focus-ring: 2px solid var(--lw-color-focus);
+  --lw-focus-offset: 3px;
+}
+
+@media (max-width: 1024px) {
+  :root {
+    --text-h1: 42px;
+    --text-h2: 30px;
+    --text-h3: 22px;
+    --lw-gutter: var(--pad-tablet);
+  }
+}
+
+@media (max-width: 640px) {
+  :root {
+    --text-h1: 32px;
+    --text-h2: 26px;
+    --text-h3: 20px;
+    --text-body: 16px;
+    --lw-gutter: var(--pad-mobile);
+    --lw-section-y: var(--space-lg);
+  }
+}
+
+@media (min-width: 1025px) {
+  :root {
+    --lw-gutter: var(--pad-desktop);
+    --lw-section-y: var(--space-2xl);
+  }
+}

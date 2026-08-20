@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LinkingWordz — Editorial Content Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  /* =========================================================
+     TOKENS
+     Display face = Nunito (rounded-geometric stand-in for
+     Garet, which isn't available as a web font here — same
+     warm, rounded-terminal character as the brand sheet).
+     Body face = Barlow, per brand guide.
+  ========================================================= */
+  :root{
+    --teal:#104547;
+    --teal-deep:#0a2f30;
+    --mauve:#AF929D;
+    --mauve-deep:#8f7482;
+    --cream:#F5F3F0;
+    --black:#000000;
+    --gray:#BBB7B7;
+    --white:#FFFFFF;
+
+    --font-display:'Nunito', 'Segoe UI', sans-serif;
+    --font-body:'Barlow', 'Segoe UI', sans-serif;
+
+    --wrap:1320px;
+    --edge: clamp(24px, 5vw, 96px);
+    --rule: 1px solid rgba(16,69,71,0.16);
+    --rule-light: 1px solid rgba(0,0,0,0.08);
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--cream);
+    color:var(--teal-deep);
+    font-family:var(--font-body);
+    font-weight:400;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  img{max-width:100%;display:block;}
+  a{color:inherit;text-decoration:none;}
+  .wrap{max-width:var(--wrap);margin:0 auto;padding:0 var(--edge);}
+  h1,h2,h3,h4{font-family:var(--font-display);margin:0;font-weight:800;letter-spacing:-0.01em;}
+  p{margin:0;line-height:1.55;}
+  button{font-family:var(--font-body);cursor:pointer;border:none;background:none;}
+
+  ::selection{background:var(--mauve);color:var(--white);}
+
+  :focus-visible{outline:2px solid var(--teal);outline-offset:3px;}
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:0.01ms !important; transition-duration:0.01ms !important; scroll-behavior:auto !important;}
+  }
+
+  .eyebrow{
+    font-family:var(--font-body);
+    text-transform:uppercase;
+    letter-spacing:0.18em;
+    font-size:12px;
+    font-weight:600;
+    color:var(--mauve-deep);
+  }
+
+  .reveal{opacity:0; transform:translateY(24px); transition:opacity 0.8s ease, transform 0.8s ease;}
+  .reveal.in{opacity:1; transform:translateY(0);}
+
+  /* =========================================================
+     HEADER
+  ========================================================= */
+  header{
+    position:sticky; top:0; z-index:100;
+    background:rgba(245,243,240,0.86);
+    backdrop-filter:blur(10px);
+    border-bottom:var(--rule-light);
+  }
+  .header-inner{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:18px var(--edge);
+  }
+  .logo img{height:34px; width:auto;}
+  nav.primary-nav{display:flex; gap:40px; align-items:center;}
+  nav.primary-nav a{
+    font-size:14px; font-weight:500; letter-spacing:0.01em;
+    position:relative; padding:4px 0;
+  }
+  nav.primary-nav a::after{
+    content:''; position:absolute; left:0; bottom:-2px; width:0; height:1px;
+    background:var(--mauve-deep); transition:width 0.3s ease;
+  }
+  nav.primary-nav a:hover::after{width:100%;}
+  .header-cta{
+    font-size:13px; font-weight:600; letter-spacing:0.03em;
+    border:1px solid var(--teal); padding:10px 22px; border-radius:2px;
+    transition:background 0.25s ease, color 0.25s ease;
+  }
+  .header-cta:hover{background:var(--teal); color:var(--cream);}
+  .menu-toggle{display:none; flex-direction:column; gap:5px; padding:8px;}
+  .menu-toggle span{width:22px; height:1.5px; background:var(--teal);}
+
+  /* =========================================================
+     HERO — signature moment
+  ========================================================= */
+  .hero{
+    position:relative;
+    padding:90px var(--edge) 0;
+    display:grid;
+    grid-template-columns: 7fr 5fr;
+    gap:40px;
+    min-height:88vh;
+    align-items:end;
+    max-width:var(--wrap); margin:0 auto;
+  }
+  .hero-copy{grid-column:1/2; padding-bottom:64px;}
+  .hero-kicker{display:flex; align-items:center; gap:14px; margin-bottom:28px;}
+  .hero-kicker .dot{width:6px; height:6px; border-radius:50%; background:var(--mauve);}
+  .hero h1{
+    font-size:clamp(48px, 6.6vw, 108px);
+    line-height:0.98;
+    color:var(--teal-deep);
+  }
+  .hero h1 em{font-style:normal; color:var(--mauve-deep);}
+  .hero-underline{
+    display:block; margin:6px 0 30px;
+    width:min(560px, 60vw);
+  }
+  .hero-underline path{
+    stroke:var(--mauve);
+    stroke-width:3;
+    fill:none;
+    stroke-linecap:round;
+    stroke-dasharray:900;
+    stroke-dashoffset:900;
+    animation:draw 1.8s 0.4s cubic-bezier(.4,0,.2,1) forwards;
+  }
+  @keyframes draw{ to{stroke-dashoffset:0;} }
+
+  .hero-sub{
+    font-size:19px; max-width:480px; color:rgba(10,47,48,0.78); font-weight:300;
+  }
+  .hero-actions{display:flex; gap:18px; margin-top:40px; align-items:center; flex-wrap:wrap;}
+  .btn-primary{
+    background:var(--teal); color:var(--cream);
+    padding:16px 30px; font-size:14px; font-weight:600; letter-spacing:0.03em;
+    border-radius:2px; transition:transform 0.3s ease, background 0.3s ease;
+    display:inline-block;
+  }
+  .btn-primary:hover{background:var(--teal-deep); transform:translateY(-2px);}
+  .btn-ghost{
+    font-size:14px; font-weight:600; letter-spacing:0.02em; color:var(--teal-deep);
+    border-bottom:1px solid var(--teal-deep); padding-bottom:2px;
+  }
+
+  .hero-panel{
+    grid-column:2/3;
+    position:relative;
+    align-self:stretch;
+    display:flex; align-items:flex-end;
+  }
+  .hero-figure{
+    width:100%; aspect-ratio:4/5;
+    background:
+      linear-gradient(155deg, var(--teal) 0%, var(--teal-deep) 100%);
+    position:relative; overflow:hidden;
+    border-radius:2px;
+  }
+  .hero-figure::before{
+    content:'';
+    position:absolute; inset:0;
+    background-image:
+      repeating-linear-gradient(0deg, rgba(245,243,240,0.05) 0px, rgba(245,243,240,0.05) 1px, transparent 1px, transparent 26px);
+  }
+  .hero-figure .nib{
+    position:absolute; right:10%; bottom:8%; width:46%; opacity:0.9;
+  }
+  .hero-figure .cap{
+    position:absolute; top:32px; left:32px; right:32px;
+    display:flex; justify-content:space-between; align-items:flex-start;
+    color:var(--cream);
+  }
+  .hero-figure .cap .num{font-family:var(--font-display); font-size:15px; font-weight:700; letter-spacing:0.04em;}
+  .hero-figure .cap .lbl{font-size:11px; letter-spacing:0.14em; text-transform:uppercase; opacity:0.7; text-align:right; max-width:130px;}
+  .hero-stat{
+    position:absolute; left:-30px; bottom:36px;
+    background:var(--cream); border:var(--rule);
+    padding:18px 22px; max-width:230px;
+    box-shadow:0 24px 48px -20px rgba(16,69,71,0.35);
+  }
+  .hero-stat .big{font-family:var(--font-display); font-size:34px; font-weight:900; color:var(--teal); line-height:1;}
+  .hero-stat .cap{font-size:12.5px; color:rgba(10,47,48,0.7); margin-top:6px; display:block;}
+
+  .hero-scroll{
+    position:absolute; left:var(--edge); bottom:22px;
+    display:flex; align-items:center; gap:10px;
+    font-size:11px; letter-spacing:0.16em; text-transform:uppercase; color:var(--teal-deep); opacity:0.55;
+  }
+  .hero-scroll .line{width:26px; height:1px; background:var(--teal-deep);}
+
+  /* =========================================================
+     TRUST STRIP
+  ========================================================= */
+  .trust{
+    border-top:var(--rule-light); border-bottom:var(--rule-light);
+    padding:34px var(--edge);
+  }
+  .trust .wrap{display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:24px;}
+  .trust-label{font-size:12px; letter-spacing:0.14em; text-transform:uppercase; color:rgba(10,47,48,0.5); white-space:nowrap;}
+  .trust-marks{display:flex; gap:clamp(28px,5vw,64px); flex-wrap:wrap; align-items:center;}
+  .trust-mark{
+    font-family:var(--font-display); font-weight:800; font-size:19px; color:rgba(16,69,71,0.38);
+    letter-spacing:0.01em;
+  }
+
+  /* =========================================================
+     AUDIENCE SPLIT — signature section
+  ========================================================= */
+  .split{position:relative;}
+  .split-inner{display:grid; grid-template-columns:1fr 1fr; min-height:640px;}
+  .split-side{
+    position:relative; padding:96px var(--edge) 96px calc(var(--edge) + 8px);
+    display:flex; flex-direction:column; justify-content:center;
+  }
+  .split-side.authors{background:var(--teal); color:var(--cream);}
+  .split-side.business{background:var(--mauve); color:var(--white);}
+  .split-eyebrow{font-size:12px; letter-spacing:0.18em; text-transform:uppercase; opacity:0.75; margin-bottom:22px;}
+  .split-side h3{font-size:clamp(30px,3.2vw,46px); line-height:1.05; max-width:420px;}
+  .split-side p{margin-top:22px; max-width:400px; font-weight:300; opacity:0.92; font-size:16px;}
+  .split-list{margin-top:30px; display:flex; flex-direction:column; gap:0;}
+  .split-list div{
+    padding:14px 0; border-top:1px solid rgba(255,255,255,0.22);
+    font-size:14.5px; display:flex; justify-content:space-between; gap:16px;
+  }
+  .split-list div:last-child{border-bottom:1px solid rgba(255,255,255,0.22);}
+  .split-cta{margin-top:34px; font-size:13.5px; font-weight:600; letter-spacing:0.03em; display:inline-flex; align-items:center; gap:8px;}
+  .split-cta .arrow{transition:transform 0.3s ease;}
+  .split-side:hover .split-cta .arrow{transform:translateX(6px);}
+
+  .split-thread{
+    position:absolute; left:50%; top:0; bottom:0; width:120px; transform:translateX(-50%);
+    z-index:5; pointer-events:none;
+  }
+  .split-thread svg{width:100%; height:100%;}
+  .split-thread circle{fill:var(--cream);}
+  .split-thread .knot{fill:var(--cream); stroke:var(--teal); stroke-width:2;}
+
+  /* =========================================================
+     PROBLEM / POSITIONING
+  ========================================================= */
+  .statement{padding:130px var(--edge);}
+  .statement .wrap{display:grid; grid-template-columns:1fr 1fr; gap:60px; align-items:start;}
+  .statement-label{position:sticky; top:120px;}
+  .statement h2{
+    font-size:clamp(30px,3.6vw,52px); line-height:1.18; color:var(--teal-deep);
+    max-width:640px;
+  }
+  .statement h2 .accent{color:var(--mauve-deep); font-style:normal;}
+  .statement-foot{margin-top:36px; display:flex; gap:40px; flex-wrap:wrap;}
+  .statement-foot div{max-width:220px;}
+  .statement-foot .num{font-family:var(--font-display); font-size:15px; font-weight:800; color:var(--mauve-deep);}
+  .statement-foot p{font-size:14px; margin-top:8px; color:rgba(10,47,48,0.72);}
+
+  /* =========================================================
+     SERVICES
+  ========================================================= */
+  .services{padding:20px var(--edge) 120px;}
+  .section-head{display:flex; justify-content:space-between; align-items:flex-end; gap:24px; margin-bottom:56px; flex-wrap:wrap;}
+  .section-head h2{font-size:clamp(32px,3.4vw,50px); max-width:560px; line-height:1.05;}
+  .section-head .desc{max-width:320px; font-size:15px; color:rgba(10,47,48,0.7); padding-bottom:6px;}
+
+  .service-row{
+    display:grid; grid-template-columns: 90px 1fr 1fr auto; gap:28px; align-items:center;
+    padding:32px 0; border-top:var(--rule);
+  }
+  .services .service-row:last-child{border-bottom:var(--rule);}
+  .service-row .tag{font-family:var(--font-display); font-size:13px; font-weight:800; color:var(--mauve-deep); letter-spacing:0.04em;}
+  .service-row h4{font-size:clamp(22px,2.2vw,30px); font-weight:700; color:var(--teal-deep);}
+  .service-row p{font-size:14.5px; color:rgba(10,47,48,0.68); max-width:360px;}
+  .service-row .go{
+    width:44px; height:44px; border:1px solid rgba(16,69,71,0.25); border-radius:50%;
+    display:flex; align-items:center; justify-content:center; transition:all 0.3s ease; flex-shrink:0;
+  }
+  .service-row:hover .go{background:var(--teal); border-color:var(--teal);}
+  .service-row:hover .go svg{stroke:var(--cream);}
+  .service-row .go svg{stroke:var(--teal); transition:stroke 0.3s ease;}
+
+  /* =========================================================
+     WHY LINKINGWORDZ
+  ========================================================= */
+  .why{background:var(--teal-deep); color:var(--cream); padding:120px var(--edge);}
+  .why .section-head h2{color:var(--cream);}
+  .why .section-head .desc{color:rgba(245,243,240,0.65);}
+  .why-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:0;}
+  .why-item{padding:38px 40px 38px 0; border-top:1px solid rgba(245,243,240,0.18);}
+  .why-item:nth-child(odd){padding-left:0;}
+  .why-item:nth-child(even){padding-left:40px; border-left:1px solid rgba(245,243,240,0.18);}
+  .why-item:nth-last-child(-n+2){border-bottom:1px solid rgba(245,243,240,0.18);}
+  .why-num{font-family:var(--font-display); font-size:13px; color:var(--mauve); letter-spacing:0.05em; font-weight:700;}
+  .why-item h4{margin-top:16px; font-size:23px; font-weight:700;}
+  .why-item p{margin-top:12px; font-size:14.5px; color:rgba(245,243,240,0.68); max-width:380px; font-weight:300;}
+
+  /* =========================================================
+     FOUNDER
+  ========================================================= */
+  .founder{padding:130px var(--edge);}
+  .founder .wrap{display:grid; grid-template-columns:0.85fr 1.15fr; gap:70px; align-items:center;}
+  .founder-figure{position:relative; aspect-ratio:3/4; background:linear-gradient(160deg,#cdbcc4,var(--mauve)); overflow:hidden;}
+  .founder-figure .ph-label{
+    position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+    text-align:center; color:rgba(255,255,255,0.85); font-size:13px; letter-spacing:0.1em; text-transform:uppercase; padding:20px;
+  }
+  .founder-quote{position:relative;}
+  .founder-quote .mark{font-family:var(--font-display); font-size:80px; color:var(--mauve); line-height:0.6; display:block; margin-bottom:14px;}
+  .founder-quote p.lede{
+    font-family:var(--font-display); font-size:clamp(22px,2.4vw,32px); font-weight:700; color:var(--teal-deep); line-height:1.28;
+  }
+  .founder-signoff{margin-top:32px; display:flex; align-items:center; gap:16px;}
+  .founder-signoff .name{font-weight:600; font-size:15px;}
+  .founder-signoff .role{font-size:13px; color:rgba(10,47,48,0.6);}
+  .founder-signoff .rule{width:1px; height:32px; background:rgba(16,69,71,0.2);}
+
+  /* =========================================================
+     PROCESS
+  ========================================================= */
+  .process{padding:120px var(--edge); background:var(--cream); border-top:var(--rule-light);}
+  .process-list{margin-top:56px;}
+  .process-item{
+    display:grid; grid-template-columns:110px 1fr 1fr; gap:28px;
+    padding:36px 0; border-top:var(--rule); align-items:baseline;
+  }
+  .process-list .process-item:last-child{border-bottom:var(--rule);}
+  .process-item .step{font-family:var(--font-display); font-size:15px; font-weight:800; color:var(--mauve-deep);}
+  .process-item h4{font-size:24px; font-weight:700; color:var(--teal-deep);}
+  .process-item p{font-size:14.5px; color:rgba(10,47,48,0.68); max-width:420px;}
+
+  /* =========================================================
+     SELECTED WORK
+  ========================================================= */
+  .work{padding:120px var(--edge);}
+  .work-grid{
+    margin-top:56px; display:grid; grid-template-columns:repeat(12,1fr); gap:24px;
+  }
+  .work-item{grid-column:span 7; position:relative;}
+  .work-item.tall{grid-column:span 5;}
+  .work-item .frame{
+    aspect-ratio:4/3; background:linear-gradient(150deg,var(--teal) 0%, #1c5d5f 60%, var(--mauve) 130%);
+    position:relative; overflow:hidden;
+  }
+  .work-item.tall .frame{aspect-ratio:3/4;}
+  .work-item .frame .ph{
+    position:absolute; inset:0; display:flex; align-items:center; justify-content:center; text-align:center; padding:24px;
+    color:rgba(245,243,240,0.85); font-size:12.5px; letter-spacing:0.1em; text-transform:uppercase;
+  }
+  .work-item .frame::after{content:''; position:absolute; inset:0; background:rgba(10,47,48,0.06);}
+  .work-meta{display:flex; justify-content:space-between; align-items:baseline; margin-top:18px; gap:16px;}
+  .work-meta h4{font-size:20px; font-weight:700; color:var(--teal-deep);}
+  .work-meta .cat{font-size:12.5px; letter-spacing:0.08em; text-transform:uppercase; color:var(--mauve-deep);}
+  .work-row2{grid-column:span 12; display:grid; grid-template-columns:repeat(12,1fr); gap:24px; margin-top:0;}
+
+  /* =========================================================
+     TESTIMONIALS
+  ========================================================= */
+  .testimonials{background:var(--mauve); color:var(--white); padding:120px var(--edge); position:relative; overflow:hidden;}
+  .testimonials .wrap{position:relative;}
+  .testi-mark{font-family:var(--font-display); font-size:140px; line-height:0.5; opacity:0.35; display:block;}
+  .testi-quote{
+    font-family:var(--font-display); font-size:clamp(24px,2.8vw,38px); font-weight:700; line-height:1.32; max-width:920px;
+  }
+  .testi-foot{display:flex; justify-content:space-between; align-items:flex-end; margin-top:46px; flex-wrap:wrap; gap:24px;}
+  .testi-person{font-size:14.5px;}
+  .testi-person .name{font-weight:600;}
+  .testi-person .role{opacity:0.75; margin-top:2px;}
+  .testi-nav{display:flex; gap:10px;}
+  .testi-nav button{
+    width:42px; height:42px; border-radius:50%; border:1px solid rgba(255,255,255,0.5);
+    display:flex; align-items:center; justify-content:center; transition:background 0.3s ease;
+  }
+  .testi-nav button:hover{background:rgba(255,255,255,0.18);}
+  .testi-dots{display:flex; gap:8px; margin-top:22px;}
+  .testi-dots span{width:6px; height:6px; border-radius:50%; background:rgba(255,255,255,0.4);}
+  .testi-dots span.on{background:var(--white); width:20px; border-radius:3px;}
+
+  /* =========================================================
+     INSIGHTS
+  ========================================================= */
+  .insights{padding:120px var(--edge);}
+  .insight-row{
+    display:grid; grid-template-columns:140px 1fr 160px 90px; gap:28px; align-items:center;
+    padding:28px 0; border-top:var(--rule);
+  }
+  .insights .insight-row:last-child{border-bottom:var(--rule);}
+  .insight-row .cat{font-size:12px; letter-spacing:0.1em; text-transform:uppercase; color:var(--mauve-deep); font-weight:600;}
+  .insight-row h4{font-size:20px; font-weight:700; color:var(--teal-deep); line-height:1.3;}
+  .insight-row .date{font-size:13px; color:rgba(10,47,48,0.55); text-align:right;}
+  .insight-row .go{
+    width:38px; height:38px; border:1px solid rgba(16,69,71,0.25); border-radius:50%; justify-self:end;
+    display:flex; align-items:center; justify-content:center; transition:all 0.3s ease;
+  }
+  .insight-row:hover .go{background:var(--teal); border-color:var(--teal);}
+  .insight-row:hover .go svg{stroke:var(--cream);}
+  .insight-row .go svg{stroke:var(--teal); transition:stroke 0.3s ease;}
+
+  /* =========================================================
+     FINAL CTA
+  ========================================================= */
+  .final-cta{background:var(--teal); color:var(--cream); padding:140px var(--edge); text-align:center; position:relative; overflow:hidden;}
+  .final-cta h2{font-size:clamp(38px,6vw,84px); line-height:1.02; max-width:900px; margin:0 auto;}
+  .final-cta .desc{margin:26px auto 0; max-width:480px; font-size:16px; color:rgba(245,243,240,0.75); font-weight:300;}
+  .final-cta .btn-primary{margin-top:44px; background:var(--cream); color:var(--teal-deep);}
+  .final-cta .btn-primary:hover{background:var(--mauve); color:var(--white);}
+  .final-underline{width:120px; height:2px; background:var(--mauve); margin:0 auto 26px;}
+
+  /* =========================================================
+     FOOTER
+  ========================================================= */
+  footer{background:var(--teal-deep); color:rgba(245,243,240,0.85); padding:80px var(--edge) 30px;}
+  .footer-top{display:grid; grid-template-columns:1.4fr 1fr 1fr 1fr 1.2fr; gap:32px; padding-bottom:64px;}
+  .footer-brand .logo-foot{font-family:var(--font-display); font-weight:900; font-size:22px; color:var(--cream);}
+  .footer-brand p{margin-top:18px; font-size:14px; max-width:260px; color:rgba(245,243,240,0.6); font-weight:300;}
+  .footer-col h5{font-size:12px; letter-spacing:0.12em; text-transform:uppercase; color:rgba(245,243,240,0.5); margin-bottom:18px; font-weight:600;}
+  .footer-col a{display:block; font-size:14.5px; margin-bottom:12px; color:rgba(245,243,240,0.85); transition:color 0.25s ease;}
+  .footer-col a:hover{color:var(--mauve);}
+  .footer-news input{
+    background:transparent; border:none; border-bottom:1px solid rgba(245,243,240,0.35);
+    padding:10px 0; color:var(--cream); font-size:14px; width:100%; margin-top:14px;
+  }
+  .footer-news input::placeholder{color:rgba(245,243,240,0.4);}
+  .footer-news button{margin-top:16px; font-size:13px; font-weight:600; letter-spacing:0.03em; border-bottom:1px solid var(--mauve); padding-bottom:2px; color:var(--cream);}
+  .footer-bottom{
+    display:flex; justify-content:space-between; align-items:center; padding-top:26px;
+    border-top:1px solid rgba(245,243,240,0.15); font-size:12.5px; color:rgba(245,243,240,0.45); flex-wrap:wrap; gap:12px;
+  }
+  .footer-bottom .socials{display:flex; gap:18px;}
+
+  /* =========================================================
+     RESPONSIVE — MOBILE 390
+  ========================================================= */
+  @media (max-width: 860px){
+    :root{--edge:22px;}
+    nav.primary-nav{display:none;}
+    .menu-toggle{display:flex;}
+    .header-cta{display:none;}
+
+    .hero{grid-template-columns:1fr; min-height:auto; padding-top:50px;}
+    .hero-copy{padding-bottom:36px;}
+    .hero h1{font-size:clamp(38px,11vw,54px);}
+    .hero-sub{font-size:17px;}
+    .hero-panel{grid-column:1/2;}
+    .hero-figure{aspect-ratio:1/1;}
+    .hero-stat{left:0; bottom:-30px; max-width:200px;}
+    .hero-actions{margin-top:60px;}
+    .hero-scroll{display:none;}
+
+    .trust .wrap{flex-direction:column; align-items:flex-start;}
+    .trust-marks{gap:26px;}
+
+    .split-inner{grid-template-columns:1fr;}
+    .split-thread{display:none;}
+    .split-side{padding:64px var(--edge);}
+    .split-side.authors{border-bottom:4px solid var(--cream);}
+
+    .statement{padding:80px var(--edge);}
+    .statement .wrap{grid-template-columns:1fr; gap:32px;}
+    .statement-label{position:static;}
+    .statement-foot{gap:26px;}
+
+    .services{padding:10px var(--edge) 80px;}
+    .service-row{grid-template-columns:1fr auto; grid-template-areas:"tag go" "title title" "desc desc"; row-gap:10px; padding:26px 0;}
+    .service-row .tag{grid-area:tag;}
+    .service-row .go{grid-area:go;}
+    .service-row h4{grid-area:title;}
+    .service-row p{grid-area:desc;}
+
+    .why{padding:80px var(--edge);}
+    .why-grid{grid-template-columns:1fr;}
+    .why-item:nth-child(even){padding-left:0; border-left:none;}
+    .why-item:nth-last-child(-n+2){border-bottom:none;}
+    .why-item:last-child{border-bottom:1px solid rgba(245,243,240,0.18);}
+
+    .founder{padding:80px var(--edge);}
+    .founder .wrap{grid-template-columns:1fr; gap:36px;}
+
+    .process{padding:80px var(--edge);}
+    .process-item{grid-template-columns:1fr; gap:10px;}
+
+    .work{padding:80px var(--edge);}
+    .work-grid{grid-template-columns:1fr; gap:40px;}
+    .work-item{grid-column:span 1 !important;}
+
+    .testimonials{padding:80px var(--edge);}
+    .testi-foot{flex-direction:column; align-items:flex-start;}
+
+    .insights{padding:80px var(--edge);}
+    .insight-row{grid-template-columns:1fr auto; grid-template-areas:"cat go" "title title" "date date"; row-gap:8px;}
+    .insight-row .cat{grid-area:cat;}
+    .insight-row .go{grid-area:go;}
+    .insight-row h4{grid-area:title;}
+    .insight-row .date{grid-area:date; text-align:left;}
+
+    .final-cta{padding:100px var(--edge);}
+
+    .footer-top{grid-template-columns:1fr 1fr; row-gap:44px;}
+    .footer-brand{grid-column:1/3;}
+    .footer-bottom{flex-direction:column; align-items:flex-start;}
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ HEADER ============ -->
+<header>
+  <div class="header-inner">
+    <a class="logo" href="#top"><img src="linkingwordz-logo.png" alt="LinkingWordz"></a>
+    <nav class="primary-nav">
+      <a href="#services">Services</a>
+      <a href="#work">Work</a>
+      <a href="#why">About</a>
+      <a href="#insights">Insights</a>
+    </nav>
+    <div style="display:flex; align-items:center; gap:18px;">
+      <a class="header-cta" href="#cta">Start a project</a>
+      <button class="menu-toggle" aria-label="Menu"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+
+<!-- ============ HERO ============ -->
+<section class="hero" id="top">
+  <div class="hero-copy">
+    <div class="hero-kicker">
+      <span class="dot"></span>
+      <span class="eyebrow">Editorial Content Studio</span>
+    </div>
+    <h1>Words that <em>earn</em><br>their placement.</h1>
+    <svg class="hero-underline" viewBox="0 0 560 24" xmlns="http://www.w3.org/2000/svg">
+      <path d="M4 18 C 140 4, 280 24, 420 10 S 540 4, 556 12"/>
+    </svg>
+    <p class="hero-sub">LinkingWordz is a content studio for authors, publishers, and brands who'd rather be read than merely seen. Strategy, storytelling, and SEO — written by people who love language.</p>
+    <div class="hero-actions">
+      <a class="btn-primary" href="#cta">Start a project</a>
+      <a class="btn-ghost" href="#work">See our work →</a>
+    </div>
+  </div>
+
+  <div class="hero-panel">
+    <div class="hero-figure">
+      <div class="cap">
+        <span class="num">Est. Studio</span>
+        <span class="lbl">Content · Strategy · Publishing</span>
+      </div>
+      <svg class="nib" viewBox="0 0 200 260" xmlns="http://www.w3.org/2000/svg" fill="none">
+        <path d="M100 10 L150 70 L150 150 L100 250 L50 150 L50 70 Z" stroke="#F5F3F0" stroke-width="2.5" opacity="0.5"/>
+        <line x1="100" y1="70" x2="100" y2="230" stroke="#F5F3F0" stroke-width="2.5" opacity="0.5"/>
+        <circle cx="100" cy="95" r="14" stroke="#AF929D" stroke-width="2.5" opacity="0.8"/>
+      </svg>
+    </div>
+    <div class="hero-stat">
+      <span class="big">240+</span>
+      <span class="cap">Bylines, campaigns &amp; publications shipped for authors and brands</span>
+    </div>
+  </div>
+
+  <div class="hero-scroll"><span class="line"></span> Scroll</div>
+</section>
+
+<!-- ============ TRUST STRIP ============ -->
+<section class="trust reveal">
+  <div class="wrap">
+    <span class="trust-label">As read &amp; published in</span>
+    <div class="trust-marks">
+      <span class="trust-mark">The Ledger Review</span>
+      <span class="trust-mark">Norwood Press</span>
+      <span class="trust-mark">Formé Studio</span>
+      <span class="trust-mark">Halcyon Books</span>
+      <span class="trust-mark">Inkwell Digest</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ AUDIENCE SPLIT ============ -->
+<section class="split reveal">
+  <div class="split-inner">
+    <div class="split-side authors">
+      <span class="split-eyebrow">For Authors &amp; Publishers</span>
+      <h3>Your manuscript deserves an audience, not just an ISBN.</h3>
+      <p>Editorial development, launch campaigns, and press placement for authors and publishing houses who want their books read as widely as they're written well.</p>
+      <div class="split-list">
+        <div><span>Book launch strategy</span><span>01</span></div>
+        <div><span>Editorial &amp; ghostwriting</span><span>02</span></div>
+        <div><span>Press &amp; media placement</span><span>03</span></div>
+      </div>
+      <a class="split-cta" href="#services">Explore author services <span class="arrow">→</span></a>
+    </div>
+    <div class="split-side business">
+      <span class="split-eyebrow">For Businesses &amp; Brands</span>
+      <h3>Content that ranks, reads well, and remembers your reader.</h3>
+      <p>SEO content strategy, digital PR, and brand storytelling for companies that refuse to sound like everyone else in their category.</p>
+      <div class="split-list">
+        <div><span>SEO content &amp; strategy</span><span>01</span></div>
+        <div><span>Digital PR &amp; link building</span><span>02</span></div>
+        <div><span>Brand voice &amp; copywriting</span><span>03</span></div>
+      </div>
+      <a class="split-cta" href="#services">Explore brand services <span class="arrow">→</span></a>
+    </div>
+  </div>
+  <div class="split-thread">
+    <svg viewBox="0 0 120 640" preserveAspectRatio="none">
+      <path d="M60 0 C 20 90, 100 170, 60 260 S 20 420, 60 500 C 90 560, 40 600, 60 640"
+            stroke="#F5F3F0" stroke-width="2" fill="none" stroke-dasharray="1 10" stroke-linecap="round"/>
+      <circle class="knot" cx="60" cy="320" r="22"/>
+    </svg>
+  </div>
+</section>
+
+<!-- ============ PROBLEM / POSITIONING ============ -->
+<section class="statement reveal">
+  <div class="wrap">
+    <div class="statement-label">
+      <span class="eyebrow">The Problem</span>
+    </div>
+    <div>
+      <h2>Most content is written to fill a calendar. <span class="accent">Ours is written to be found, felt, and forwarded.</span></h2>
+      <div class="statement-foot">
+        <div>
+          <span class="num">01</span>
+          <p>Generic agencies optimise for volume. We optimise for the sentence someone actually stops to read.</p>
+        </div>
+        <div>
+          <span class="num">02</span>
+          <p>SEO without craft reads like SEO. We write for the algorithm and the human, in that order of difficulty — not priority.</p>
+        </div>
+        <div>
+          <span class="num">03</span>
+          <p>A book or a brand only gets one first impression. We treat every piece like it's that one.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SERVICES ============ -->
+<section class="services reveal" id="services">
+  <div class="section-head">
+    <h2>What we make</h2>
+    <p class="desc">Six disciplines, one editorial standard — mixed and matched to the project in front of us.</p>
+  </div>
+
+  <div class="service-row">
+    <span class="tag">Strategy</span>
+    <h4>Content &amp; SEO Strategy</h4>
+    <p>Editorial roadmaps built on real search demand and reader intent, not keyword stuffing.</p>
+    <span class="go"><svg width="16" height="16" viewBox="0 0 16 16"><path d="M2 8h11M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.4" fill="none"/></svg></span>
+  </div>
+  <div class="service-row">
+    <span class="tag">Writing</span>
+    <h4>Editorial &amp; Ghostwriting</h4>
+    <p>Long-form, bylines, and full manuscripts written in a voice indistinguishable from your own.</p>
+    <span class="go"><svg width="16" height="16" viewBox="0 0 16 16"><path d="M2 8h11M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.4" fill="none"/></svg></span>
+  </div>
+  <div class="service-row">
+    <span class="tag">Publishing</span>
+    <h4>Book Launch Campaigns</h4>
+    <p>From pre-order copy to launch-week press — a publishing plan built around your reader, not just your release date.</p>
+    <span class="go"><svg width="16" height="16" viewBox="0 0 16 16"><path d="M2 8h11M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.4" fill="none"/></svg></span>
+  </div>
+  <div class="service-row">
+    <span class="tag">Authority</span>
+    <h4>Digital PR &amp; Link Building</h4>
+    <p>Earned coverage and quality backlinks through stories worth linking to — not outreach spam.</p>
+    <span class="go"><svg width="16" height="16" viewBox="0 0 16 16"><path d="M2 8h11M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.4" fill="none"/></svg></span>
+  </div>
+  <div class="service-row">
+    <span class="tag">Voice</span>
+    <h4>Brand Copywriting</h4>
+    <p>Website, product, and campaign copy that sounds like one person wrote it, on purpose.</p>
+    <span class="go"><svg width="16" height="16" viewBox="0 0 16 16"><path d="M2 8h11M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.4" fill="none"/></svg></span>
+  </div>
+  <div class="service-row">
+    <span class="tag">Growth</span>
+    <h4>Content Amplification</h4>
+    <p>Repurposing and distribution so the work you commissioned once keeps working long after.</p>
+    <span class="go"><svg width="16" height="16" viewBox="0 0 16 16"><path d="M2 8h11M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.4" fill="none"/></svg></span>
+  </div>
+</section>
+
+<!-- ============ WHY LINKINGWORDZ ============ -->
+<section class="why reveal" id="why">
+  <div class="section-head">
+    <h2>Why studios &amp; brands choose us</h2>
+    <p class="desc">We're small on purpose — every project gets senior editorial attention, not a junior queue.</p>
+  </div>
+  <div class="why-grid">
+    <div class="why-item">
+      <span class="why-num">Editorial rigor</span>
+      <h4>Writers first, marketers second</h4>
+      <p>Our team comes from publishing and journalism, not content farms — every brief gets a real point of view.</p>
+    </div>
+    <div class="why-item">
+      <span class="why-num">Proof over promises</span>
+      <h4>Rankings and readership, tracked</h4>
+      <p>We report on what actually moved — traffic, coverage, and conversions — not vanity word counts.</p>
+    </div>
+    <div class="why-item">
+      <span class="why-num">One point of contact</span>
+      <h4>No hand-offs, no dilution</h4>
+      <p>The strategist who scopes your project is the one who reads every draft before it ships.</p>
+    </div>
+    <div class="why-item">
+      <span class="why-num">Built to last</span>
+      <h4>Evergreen by design</h4>
+      <p>We write for search today and for the reader who finds it in three years — both, always.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FOUNDER ============ -->
+<section class="founder reveal">
+  <div class="wrap">
+    <div class="founder-figure">
+      <div class="ph-label">Founder portrait<br>placeholder — replace<br>with photograph</div>
+    </div>
+    <div class="founder-quote">
+      <span class="eyebrow">Founder's Note</span>
+      <span class="mark">"</span>
+      <p class="lede">I started LinkingWordz because I was tired of watching good books and good brands get buried under content that technically "performed" but said nothing at all.</p>
+      <div class="founder-signoff">
+        <div class="rule"></div>
+        <div>
+          <div class="name">Founder Name</div>
+          <div class="role">Founder &amp; Editorial Director, LinkingWordz</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PROCESS ============ -->
+<section class="process reveal">
+  <div class="section-head">
+    <h2>How a project runs</h2>
+    <p class="desc">A short, deliberate sequence — no bloated onboarding, no scope creep.</p>
+  </div>
+  <div class="process-list">
+    <div class="process-item">
+      <span class="step">01 / Discover</span>
+      <h4>Brief &amp; audit</h4>
+      <p>We study your existing content, audience, and category before proposing a single word.</p>
+    </div>
+    <div class="process-item">
+      <span class="step">02 / Draft</span>
+      <h4>Strategy &amp; first draft</h4>
+      <p>A content plan and initial drafts in your voice, grounded in real search and reader data.</p>
+    </div>
+    <div class="process-item">
+      <span class="step">03 / Refine</span>
+      <h4>Editorial review</h4>
+      <p>Structured rounds of feedback with a senior editor — not an inbox of unmanaged comments.</p>
+    </div>
+    <div class="process-item">
+      <span class="step">04 / Publish</span>
+      <h4>Launch</h4>
+      <p>We handle formatting, publishing, and placement so the work goes live exactly as intended.</p>
+    </div>
+    <div class="process-item">
+      <span class="step">05 / Amplify</span>
+      <h4>Distribute &amp; measure</h4>
+      <p>Repurposing, outreach, and reporting so the piece keeps earning attention after it ships.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SELECTED WORK ============ -->
+<section class="work reveal" id="work">
+  <div class="section-head">
+    <h2>Selected work</h2>
+    <p class="desc">A few of the books, brands, and campaigns we've recently shaped.</p>
+  </div>
+  <div class="work-grid">
+    <div class="work-item tall">
+      <div class="frame"><span class="ph">Case study image<br>placeholder</span></div>
+      <div class="work-meta"><h4>The Quiet Ledger — Launch</h4><span class="cat">Publishing</span></div>
+    </div>
+    <div class="work-item">
+      <div class="frame"><span class="ph">Case study image<br>placeholder</span></div>
+      <div class="work-meta"><h4>Norwood &amp; Kin — Brand Voice</h4><span class="cat">Branding</span></div>
+    </div>
+    <div class="work-row2">
+      <div class="work-item">
+        <div class="frame"><span class="ph">Case study image<br>placeholder</span></div>
+        <div class="work-meta"><h4>Formé Skincare — SEO Growth</h4><span class="cat">SEO</span></div>
+      </div>
+      <div class="work-item tall">
+        <div class="frame"><span class="ph">Case study image<br>placeholder</span></div>
+        <div class="work-meta"><h4>Halcyon Press — Digital PR</h4><span class="cat">Digital PR</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TESTIMONIALS ============ -->
+<section class="testimonials reveal">
+  <div class="wrap">
+    <span class="testi-mark">"</span>
+    <p class="testi-quote">LinkingWordz didn't just write our launch copy — they understood what the book was actually trying to say before we could articulate it ourselves.</p>
+    <div class="testi-foot">
+      <div class="testi-person">
+        <div class="name">Author, The Quiet Ledger</div>
+        <div class="role">Debut Fiction, Norwood Press</div>
+      </div>
+      <div>
+        <div class="testi-nav">
+          <button aria-label="Previous"><svg width="14" height="14" viewBox="0 0 16 16"><path d="M10 2L4 8l6 6" stroke="currentColor" stroke-width="1.4" fill="none"/></svg></button>
+          <button aria-label="Next"><svg width="14" height="14" viewBox="0 0 16 16"><path d="M6 2l6 6-6 6" stroke="currentColor" stroke-width="1.4" fill="none"/></svg></button>
+        </div>
+        <div class="testi-dots"><span class="on"></span><span></span><span></span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ INSIGHTS ============ -->
+<section class="insights reveal" id="insights">
+  <div class="section-head">
+    <h2>Insights</h2>
+    <p class="desc">Notes on writing, SEO, and publishing from our editorial team.</p>
+  </div>
+  <div class="insight-row">
+    <span class="cat">SEO</span>
+    <h4>Why "helpful content" still needs an editor</h4>
+    <span class="date">Aug 2026</span>
+    <span class="go"><svg width="14" height="14" viewBox="0 0 16 16"><path d="M2 8h11M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.4" fill="none"/></svg></span>
+  </div>
+  <div class="insight-row">
+    <span class="cat">Publishing</span>
+    <h4>The pre-launch checklist we give every debut author</h4>
+    <span class="date">Jul 2026</span>
+    <span class="go"><svg width="14" height="14" viewBox="0 0 16 16"><path d="M2 8h11M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.4" fill="none"/></svg></span>
+  </div>
+  <div class="insight-row">
+    <span class="cat">Brand</span>
+    <h4>Finding a brand voice that survives more than one writer</h4>
+    <span class="date">Jul 2026</span>
+    <span class="go"><svg width="14" height="14" viewBox="0 0 16 16"><path d="M2 8h11M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.4" fill="none"/></svg></span>
+  </div>
+</section>
+
+<!-- ============ FINAL CTA ============ -->
+<section class="final-cta reveal" id="cta">
+  <div class="final-underline"></div>
+  <span class="eyebrow" style="color:var(--mauve);">Let's work together</span>
+  <h2 style="margin-top:18px;">Tell us what you're trying to say.</h2>
+  <p class="desc">We'll tell you how to say it so people stop scrolling and start reading.</p>
+  <a class="btn-primary" href="#">Start a project</a>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+  <div class="footer-top">
+    <div class="footer-brand">
+      <div class="logo-foot">LinkingWordz</div>
+      <p>An editorial content studio for authors, publishers, and brands who write to be remembered.</p>
+    </div>
+    <div class="footer-col">
+      <h5>Studio</h5>
+      <a href="#why">About</a>
+      <a href="#work">Work</a>
+      <a href="#insights">Insights</a>
+      <a href="#cta">Contact</a>
+    </div>
+    <div class="footer-col">
+      <h5>For Authors</h5>
+      <a href="#services">Book launches</a>
+      <a href="#services">Ghostwriting</a>
+      <a href="#services">Press placement</a>
+    </div>
+    <div class="footer-col">
+      <h5>For Brands</h5>
+      <a href="#services">SEO content</a>
+      <a href="#services">Digital PR</a>
+      <a href="#services">Brand copy</a>
+    </div>
+    <div class="footer-col footer-news">
+      <h5>Stay in the loop</h5>
+      <input type="email" placeholder="Your email address">
+      <button>Subscribe →</button>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 LinkingWordz. All rights reserved.</span>
+    <div class="socials">
+      <a href="#">Instagram</a>
+      <a href="#">LinkedIn</a>
+      <a href="#">X</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Menu toggle (mobile) — simple show/hide of nav as an overlay list
+  const toggle = document.querySelector('.menu-toggle');
+  if(toggle){
+    toggle.addEventListener('click', () => {
+      const nav = document.querySelector('.primary-nav');
+      const open = nav.style.display === 'flex';
+      nav.style.display = open ? 'none' : 'flex';
+      nav.style.cssText += open ? '' : 'position:fixed; inset:64px 0 0 0; background:#F5F3F0; flex-direction:column; padding:40px 24px; gap:28px; font-size:20px; z-index:99;';
+    });
+  }
+
+  // Scroll reveal
+  const revealEls = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, {threshold:0.12});
+  revealEls.forEach(el => io.observe(el));
+</script>
+
+</body>
+</html>
