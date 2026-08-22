@@ -57,6 +57,28 @@
   color: var(--lw-mauve);
 }
 
+.lw-btn--secondary {
+  background: var(--lw-mauve);
+  color: var(--lw-cream);
+  border: 1px solid var(--lw-mauve);
+}
+
+.lw-btn--secondary:hover {
+  background: color-mix(in srgb, var(--lw-mauve) 82%, var(--lw-black));
+  border-color: color-mix(in srgb, var(--lw-mauve) 82%, var(--lw-black));
+}
+
+.lw-btn--light {
+  background: var(--lw-cream);
+  color: var(--lw-teal-dark);
+  border: 1px solid var(--lw-cream);
+}
+
+.lw-btn--light:hover {
+  background: var(--lw-white);
+  color: var(--lw-teal-dark);
+}
+
 /* =========================================================
    Hero
    ========================================================= */

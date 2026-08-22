@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 
-type ButtonVariant = "primary" | "ghost";
+type ButtonVariant = "primary" | "secondary" | "ghost" | "light";
 
 type ButtonProps = {
   href: string;
